@@ -1,0 +1,44 @@
+<table class="table">
+   <thead>
+      <tr>
+         <th>Category</th>
+         <th>Topic</th>
+         <th>User Name</th>
+         <th>Posts</th>
+      </tr>
+   </thead>
+   <tbody>
+      <tr ng-repeat="topic in dc.topics">
+         <td>
+            {{topic.category}}
+         </td>
+         <td>
+            <a ng-href="/#/topic/{{topic._id}}">{{topic.name}}</a>
+         </td>
+         <td>
+            <a ng-href="/#/user/{{topic._user._id}}">{{topic._user.name}}</a>
+         </td>
+         <td>
+            {{topic._postsList.length}}
+         </td>
+      </tr>
+   </tbody>
+</table>
+<form>
+   <h3>Add a new topic</h3>
+   <div class="form-group">
+      <label>Topic</label>
+      <input type="text" ng-model="dc.newTopic.title"/ >
+   </div>
+   <div class="form-group">
+      <label>Description</label>
+      <textarea ng-model="dc.newTopic.description"></textarea>
+   </div>
+   <div class="form-group">
+      <label>Topic</label>
+      <select ng-model="dc.newTopic.category" ng-options="topic as topic.name for topic in dc.topicCats"></select>
+   </div>
+   <div class="form-group">
+      <button ng-click="dc.addNewTopic();">Submit</button>
+   </div>
+</form>

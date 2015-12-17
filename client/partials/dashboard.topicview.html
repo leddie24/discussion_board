@@ -1,0 +1,26 @@
+<h1>{{ tc.topicDetails._user.name }} posted a topic</h1>
+
+<h1>{{ tc.topicDetails.name }}</h1>
+<div>Description: {{ tc.topicDetails.description }}</div>
+<form>
+<textarea ng-model="tc.topicPost.text" cols="30" rows="10"></textarea>
+<button ng-click="tc.addPost();">Post</button>
+</form>
+<hr />
+<div class="row" ng-repeat="post in tc.topicDetails._postsList">
+   <div class="col-xs-12">
+      <a ng-href="/#/user/{{ post._user._id }}">{{ post._user.name }}</a> {{post.content }}
+      <div class="pull-right">
+         <a href="" class="btn btn-primary" ng-click="tc.likePost(post);">{{ post.likes }} LIKE</a>
+         <a href="" class="btn btn-warning" ng-click="tc.dislikePost(post);">{{ post.dislikes }} DISLIKE</a>
+      </div>
+      <form>
+         <textarea ng-model="tc.postCommentText[$index]"></textarea>
+         <button ng-click="tc.addComment(post, tc.postCommentText[$index], $index);">Comment</button>
+         <div ng-repeat="comment in post._comments">
+            <a ng-href="/#/user/{{comment._user._id}}">{{ comment._user.name}}</a>:{{ comment.content }}
+         </div>
+      </form>
+      <hr />
+   </div>
+</div>
