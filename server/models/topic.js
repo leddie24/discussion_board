@@ -6,6 +6,9 @@ var TopicSchema = new Schema({
    category: String,
    name: String,
    description: String,
+   postDateTime: {type:Date, default: new Date},
+   likes: {type: Number, default: 0 },
+   dislikes: {type: Number, default: 0 },
    _user: {type: Schema.Types.ObjectId, ref: 'User'},
    _postsList: [{type: Schema.Types.ObjectId, ref: 'Post'}]
 });

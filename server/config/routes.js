@@ -26,15 +26,19 @@ module.exports = function(app) {
    app.post('/addpost/:id', function (req, res) {
       console.log(req.params, req.body);
       topicCtrl.addPost(req, res);
-   })
+   });
 
    app.post('/addcomment/:id', function (req, res) {
       topicCtrl.addComment(req, res);
-   })
+   });
 
    app.get('/userinfo/:id', function (req, res) {
       loginCtrl.getUser(req, res);
-   })
+   });
+
+   app.post('/liketopic', function (req, res) {
+      topicCtrl.likeTopic(req, res);
+   });
 
    app.post('/likepost', function (req, res) {
       console.log(req.body);

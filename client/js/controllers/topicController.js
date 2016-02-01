@@ -4,6 +4,7 @@ discBoard.controller('topicController', function($stateParams, $scope, LoginFact
    mv.curr_user = LoginFactory.getUser();
 
    TopicFactory.getTopicDetails($stateParams.id, function(data) {
+      console.log(data);
       mv.topicDetails = data;
    });
 
@@ -40,6 +41,16 @@ discBoard.controller('topicController', function($stateParams, $scope, LoginFact
          mv.topicDetails = data;
          alert('added comment');
       })
+   }
+
+   mv.likeTopic = function() {
+      var info = {
+         topicId: $stateParams.id
+      }
+      TopicFactory.likeTopic(info, function(data) {
+         console.log(data);
+         mv.topicDetails = data;
+      });
    }
 
    mv.likePost = function(post) {

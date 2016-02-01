@@ -1,44 +1,43 @@
-<table class="table">
+<div>
+   <button ng-click="dc.showNewTopicForm()" class="btn btn-default">
+      New Topic
+   </button>
+</div>
+
+<modal title="Add A New Topic" visible="dc.showModal">
+   <form role="form">
+      <div class="form-group">
+         <label for="title">Title</label>
+         <input type="text" class="form-control" ng-model="dc.newTopic.title"/ >
+      </div>
+      <div class="form-group">
+         <label>Description</label>
+         <textarea class="form-control" ng-model="dc.newTopic.description"></textarea>
+      </div>
+      <div class="form-group">
+         <label>Topic</label>
+         <select class="form-control" ng-model="dc.newTopic.category" ng-options="topic as topic.name for topic in dc.topicCats"></select>
+      </div>
+      <div class="form-group">
+         <button class="btn btn-default" ng-click="dc.addNewTopic();">Submit</button>
+      </div>
+   </form>
+</modal>
+<table class="table table-striped">
    <thead>
       <tr>
-         <th>Category</th>
-         <th>Topic</th>
-         <th>User Name</th>
-         <th>Posts</th>
+        <th>
+           Topic
+        </th>
+        <th>
+          Category
+        </th>
+        <th class="cell-stat hidden-xs hidden-sm">Author</th>
+        <th class="cell-stat text-center hidden-xs hidden-sm">Posts</th>
+        <th class="cell-stat-2x hidden-xs hidden-sm">Last Post</th>
       </tr>
    </thead>
    <tbody>
-      <tr ng-repeat="topic in dc.topics">
-         <td>
-            {{topic.category}}
-         </td>
-         <td>
-            <a ng-href="/#/topic/{{topic._id}}">{{topic.name}}</a>
-         </td>
-         <td>
-            <a ng-href="/#/user/{{topic._user._id}}">{{topic._user.name}}</a>
-         </td>
-         <td>
-            {{topic._postsList.length}}
-         </td>
-      </tr>
+      <tr ng-repeat="topic in dc.topics" print-topics></tr>
    </tbody>
 </table>
-<form>
-   <h3>Add a new topic</h3>
-   <div class="form-group">
-      <label>Topic</label>
-      <input type="text" ng-model="dc.newTopic.title"/ >
-   </div>
-   <div class="form-group">
-      <label>Description</label>
-      <textarea ng-model="dc.newTopic.description"></textarea>
-   </div>
-   <div class="form-group">
-      <label>Topic</label>
-      <select ng-model="dc.newTopic.category" ng-options="topic as topic.name for topic in dc.topicCats"></select>
-   </div>
-   <div class="form-group">
-      <button ng-click="dc.addNewTopic();">Submit</button>
-   </div>
-</form>

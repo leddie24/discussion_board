@@ -1,26 +1,78 @@
-<h1>{{ tc.topicDetails._user.name }} posted a topic</h1>
-
-<h1>{{ tc.topicDetails.name }}</h1>
-<div>Description: {{ tc.topicDetails.description }}</div>
-<form>
-<textarea ng-model="tc.topicPost.text" cols="30" rows="10"></textarea>
-<button ng-click="tc.addPost();">Post</button>
-</form>
-<hr />
-<div class="row" ng-repeat="post in tc.topicDetails._postsList">
-   <div class="col-xs-12">
-      <a ng-href="/#/user/{{ post._user._id }}">{{ post._user.name }}</a> {{post.content }}
-      <div class="pull-right">
-         <a href="" class="btn btn-primary" ng-click="tc.likePost(post);">{{ post.likes }} LIKE</a>
-         <a href="" class="btn btn-warning" ng-click="tc.dislikePost(post);">{{ post.dislikes }} DISLIKE</a>
-      </div>
-      <form>
-         <textarea ng-model="tc.postCommentText[$index]"></textarea>
-         <button ng-click="tc.addComment(post, tc.postCommentText[$index], $index);">Comment</button>
-         <div ng-repeat="comment in post._comments">
-            <a ng-href="/#/user/{{comment._user._id}}">{{ comment._user.name}}</a>:{{ comment.content }}
+<div class="panel">
+   <div class="post col-lg-12">
+      <div class="post-header">
+         <div class="topic-title">{{ tc.topicDetails.name }}</div>
+         By <a class="user-link" href="#">{{ tc.topicDetails._user.name }}</a> - <i class="fa fa-clock-o"></i> {{ tc.topicDetails.postDateTime | date:'medium' }}
+         <div class="pull-right">
+            <a href="" class="btn btn-primary" ng-click="tc.likeTopic();">
+               <i class="fa fa-thumbs-o-up"></i> Like {{ tc.topicDetails.likes }}
+            </a>
+            <a href="" class="btn btn-warning" ng-click="tc.dislikeTopic();">
+               <i class="fa fa-thumbs-o-down"></i> Dislike {{ tc.topicDetails.dislikes }}
+            </a>
          </div>
-      </form>
-      <hr />
+      </div>
+      <div class="panel-body">
+            {{ tc.topicDetails.description }}
+      </div>
    </div>
+</div>
+
+<div class="panel" ng-repeat="post in tc.topicDetails._postsList">
+   <div class="post col-lg-12">
+      <div class="post-header">
+         By <a class="user-link" href="#">{{ post._user.name }}</a> - <i class="fa fa-clock-o"></i> {{post.postDateTime | date:'medium'}}
+         <div class="pull-right">
+            <a href="" class="btn btn-primary" ng-click="tc.likePost(post);">
+               <i class="fa fa-thumbs-o-up"></i> Like {{ post.likes }}
+            </a>
+            <a href="" class="btn btn-warning" ng-click="tc.dislikePost(post);">
+               <i class="fa fa-thumbs-o-down"></i> Dislike {{ post.dislikes }}
+            </a>
+         </div>
+      </div>
+      <div class="panel-body">
+            {{post.content }}
+      </div>
+   </div>
+   <div class="post comment col-lg-11 col-lg-offset-1" ng-repeat="comment in post._comments">
+      <div class="post-header">
+         By <a class="user-link" ng-href="/#/user/{{comment._user._id}}">{{ comment._user.name }}</a> - <i class="fa fa-clock-o"></i> {{ comment.postDateTime | date:'medium'}}
+         <div class="pull-right">
+            <a href="" class="btn btn-primary" ng-click="tc.likePost(post);"><i class="fa fa-thumbs-o-up">
+            </i> Like {{ post.likes }}</a>
+            <a href="" class="btn btn-warning" ng-click="tc.dislikePost(post);">Dislike {{ post.dislikes }}</a>
+         </div>
+      </div>
+      <div class="panel-body">
+            {{ comment.content }}
+      </div>
+   </div>
+   <div class="post comment col-lg-11 col-lg-offset-1">
+      <div class="topic-title">Add New Comment</div>
+      <div>
+         <div class="form-group">
+            <textarea class="form-control" ng-model="tc.postCommentText[$index]"></textarea>
+         </div>
+         <div class="form-group">
+            <button class="btn btn-default" ng-click="tc.addComment(post, tc.postCommentText[$index], $index);">Reply</button>
+         </div>
+      </div>
+   </div>
+</div>
+
+
+
+<div class="panel">
+   <form class="post col-lg-12">
+      <div class="topic-title">Add New Post</div>
+      <div>
+         <div class="form-group">
+            <textarea class="form-control" ng-model="tc.topicPost.text" cols="30" rows="10"></textarea>
+         </div>
+         <div class="form-group">
+            <button class="btn btn-default" ng-click="tc.addPost();">Reply</button>
+         </div>
+      </div>
+   </form>
 </div>

@@ -2,6 +2,7 @@ discBoard.controller('dashboardController', function($scope, $location, LoginFac
    var mv = this;
 
    mv.curr_user = LoginFactory.getUser();
+   mv.showModal = false;
 
    TopicFactory.getTopicCategories(function(data) {
       console.log(data);
@@ -21,6 +22,10 @@ discBoard.controller('dashboardController', function($scope, $location, LoginFac
       if (!LoginFactory.getUser()) {
          $location.url('/');
       }
+   }
+
+   mv.showNewTopicForm = function() {
+      mv.showModal = !mv.showModal;
    }
 
    mv.addNewTopic = function() {

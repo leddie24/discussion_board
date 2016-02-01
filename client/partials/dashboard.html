@@ -1,4 +1,22 @@
-<h1>Welcome, {{ dc.curr_user.name }}</h1>
-<a href="/#/dashboard">Dashboard</a>
-<button ng-click="dc.logOutUser();">Log out</button>
-<div ui-view></div>
+<div class="row">
+  <div class="col-lg-10 col-lg-offset-1">
+    <div class="page-header page-heading">
+    <h1 class="pull-left">Forums</h1>
+    <div class="pull-right text-right">
+      <ol class="breadcrumb where-am-i">
+         <li><a href="/#/">Forums</a></li>
+         <li class="active">List of topics</li>
+      </ol>
+      <div>
+         <strong>Welcome</strong>: {{dc.curr_user.name}}! 
+      </div>
+      <div>
+         <a id="logout" ng-click="dc.logOutUser();">Logout</a>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    </div>
+    <p class="lead"></p>
+    <div ui-view></div>
+  </div>
+</div>

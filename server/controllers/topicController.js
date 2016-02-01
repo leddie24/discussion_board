@@ -7,21 +7,24 @@ var User = mongoose.model('User');
 
 module.exports = {
    getTopics: function(req, res) {
-      Topic.find({}).populate('_user').exec(function (err, topics) {
+      Topic.find({}).deepPopulate(['_user', '_postsList']).exec(function (err, topics) {
          if (err) {
             console.log('error getting topics', err);
          } else {
-            console.log('got topics');
+            console.log('got topics', topics);
             res.json(topics);
          }
       })
    },
    addTopic: function(req, res) {
       console.log(req.body); 
+
+      var date = new Date();
       var topic = new Topic({
          category: req.body.category.name,
          name: req.body.title,
          description: req.body.description,
+         postDateTime: date,
          _user: req.body.user._id
       });
       topic.save(function(err) {
@@ -119,6 +122,27 @@ module.exports = {
                   });
                }
             })
+         }
+      })
+   },
+   likeTopic: function(req, res) {
+      console.log('----------');
+      console.log(req.body.topicId);
+      console.log('----------');
+      Topic.findByIdAndUpdate(req.body.topicId, { $inc: { likes: 1}}, {new: true}, function (err, topic) {
+         if (err) {
+            console.log(err);
+         } else {
+            Topic.findById(req.body.topicId)
+            .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
+            .exec(function (err, topic) {
+               if (err) {
+                  console.log(err);
+               } else {
+                  console.log(topic);
+                  res.json(topic);
+               }
+            });
          }
       })
    },

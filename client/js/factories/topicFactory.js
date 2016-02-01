@@ -66,6 +66,16 @@ discBoard.factory('TopicFactory', function($http) {
       });
    }
 
+   factory.likeTopic = function(info, callback) {
+      $http.post('/liketopic', info)
+      .then(function (response) {
+         callback(response.data);
+      })
+      .catch(function (response) {
+         console.log(response, 'error liking topic');
+      })
+   }
+
    factory.likePost = function(info, callback) {
       $http.post('/likepost', info)
       .then(function (response) {

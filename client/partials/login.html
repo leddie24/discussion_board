@@ -1,6 +1,12 @@
-<p>Hello!</p>
-<p>Please enter your name to join and share your ideas</p>
-<form>
-<input type="text" ng-model="lc.loginUser.name" />
-<button ng-click="lc.loginToBoard();">Enter</button>
-</form>
+<div class="row">
+   <div id="login-diag" class="col-lg-4 col-lg-offset-4">
+      <h2>Hello!</h2>
+      <p>Please enter your name to join and share your ideas</p>
+      <form class="input-group">
+         <input class="form-control" type="text" ng-model="lc.loginUser.name" />
+         <span class="input-group-btn">
+            <button class="btn btn-default" ng-click="lc.loginToBoard();">Enter</button>
+         </span>
+      </form>
+   </div>
+</div>
