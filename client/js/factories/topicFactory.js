@@ -24,10 +24,12 @@ discBoard.factory('TopicFactory', function($http) {
    factory.getTopicDetails = function(topic, callback) {
       $http.get('/topicdetails/' + topic)
       .then(function(response) {
+         console.log('hello');
+         console.log(response);
          callback(response.data);
-         console.log(response.data, 'got topic')
       })
       .catch(function(response) {
+         callback(response);
          console.log(response, 'error');
       });
    }
@@ -66,33 +68,23 @@ discBoard.factory('TopicFactory', function($http) {
       });
    }
 
-   factory.likeTopic = function(info, callback) {
-      $http.post('/liketopic', info)
+   factory.likeContent = function(info, callback) {
+      $http.post('/likecontent', info)
       .then(function (response) {
          callback(response.data);
       })
       .catch(function (response) {
-         console.log(response, 'error liking topic');
+         console.log(response, 'error liking content');
       })
    }
 
-   factory.likePost = function(info, callback) {
-      $http.post('/likepost', info)
+   factory.dislikeContent = function(info, callback) {
+      $http.post('/dislikecontent', info)
       .then(function (response) {
          callback(response.data);
       })
       .catch(function (response) {
-         console.log(response, 'error liking post');
-      })
-   }
-
-   factory.dislikePost = function(info, callback) {
-      $http.post('/dislikepost', info)
-      .then(function (response) {
-         callback(response.data);
-      })
-      .catch(function (response) {
-         console.log(response, 'error liking post');
+         console.log(response, 'error liking content');
       })
    }
 

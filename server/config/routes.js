@@ -19,12 +19,10 @@ module.exports = function(app) {
    })
 
    app.get('/topicdetails/:id', function (req, res) {
-      console.log(req.params, req.body);
       topicCtrl.getTopicDetails(req, res);
    });
 
    app.post('/addpost/:id', function (req, res) {
-      console.log(req.params, req.body);
       topicCtrl.addPost(req, res);
    });
 
@@ -36,17 +34,11 @@ module.exports = function(app) {
       loginCtrl.getUser(req, res);
    });
 
-   app.post('/liketopic', function (req, res) {
-      topicCtrl.likeTopic(req, res);
+   app.post('/likecontent', function (req, res) {
+      topicCtrl.likeContent(req, res);
    });
 
-   app.post('/likepost', function (req, res) {
-      console.log(req.body);
-      topicCtrl.likePost(req, res);
-   });
-
-   app.post('/dislikepost', function (req, res) {
-      console.log(req.body);
-      topicCtrl.dislikePost(req, res);
+   app.post('/dislikecontent', function (req, res) {
+      topicCtrl.dislikeContent(req, res);
    });
 }

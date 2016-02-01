@@ -5,13 +5,31 @@ var Post = mongoose.model('Post');
 var Comment = mongoose.model('Comment');
 var User = mongoose.model('User');
 
+function getTypeAndID(info) {
+   var Query;
+   var id;
+   if (info.type == 'post') {
+      Query = Post;
+      id = info.content._id;
+   } else if (info.type == 'comment') {
+      Query = Comment;
+      id = info.content._id;
+   } else {
+      Query = Topic;
+      id = info.topicId;
+   }
+   return {
+      Query: Query,
+      id: id
+   }
+}
+
 module.exports = {
    getTopics: function(req, res) {
       Topic.find({}).deepPopulate(['_user', '_postsList']).exec(function (err, topics) {
          if (err) {
             console.log('error getting topics', err);
          } else {
-            console.log('got topics', topics);
             res.json(topics);
          }
       })
@@ -44,16 +62,19 @@ module.exports = {
       });
    },
    getTopicDetails: function(req, res) {
-      console.log(req.params.id);
-      Topic.findById(req.params.id)
-      .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
-      .exec(function (err, topic) {
-         if (err) {
-            console.log(err);
-         } else {
-            res.json(topic);
-         }
-      });
+      if (req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+         Topic.findById(req.params.id)
+         .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
+         .exec(function (err, topic) {
+            if (err) {
+               console.log(err);
+            } else {
+               res.json(topic);
+            }
+         });
+      } else {
+         res.status(400).send('Not valid ID');
+      }
    },
    addPost: function(req, res) {
       var post = new Post({
@@ -77,9 +98,6 @@ module.exports = {
                      if (err) {
                         console.log(err);
                      } else {
-                        console.log('added post to user and topic', user);
-                        console.log('-=-=-=-=-=-=-=--');
-                        console.log(topic);
                         res.json(topic);
                      }
                   });
@@ -99,7 +117,6 @@ module.exports = {
          if (err) {
             console.log("Error adding comment", err);
          } else {
-            console.log("Added new comment", comment);
             Post.findByIdAndUpdate(req.params.id, {$push: {_comments: comment}}, {new: true}, function (err, post) {
                if (err) {
                   console.log(err);
@@ -125,62 +142,127 @@ module.exports = {
          }
       })
    },
-   likeTopic: function(req, res) {
-      console.log('----------');
-      console.log(req.body.topicId);
-      console.log('----------');
-      Topic.findByIdAndUpdate(req.body.topicId, { $inc: { likes: 1}}, {new: true}, function (err, topic) {
+   likeContent: function(req, res) {
+      var info = getTypeAndID(req.body);
+      info.Query.findById(info.id)
+      .exec(function (err, data) {
          if (err) {
             console.log(err);
          } else {
-            Topic.findById(req.body.topicId)
-            .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
-            .exec(function (err, topic) {
-               if (err) {
-                  console.log(err);
-               } else {
-                  console.log(topic);
-                  res.json(topic);
-               }
-            });
+            // If user hasn't liked content already, like content
+            if (data._likesUsers.indexOf(req.body.currUser._id) === -1) {
+               info.Query.findByIdAndUpdate(info.id,
+               {
+                  $inc: {
+                     likes: 1
+                  },
+                  $push: {
+                     _likesUsers: req.body.currUser._id
+                  }
+               }, {new: true}, function (err, topic) {
+                  if (err) {
+                     console.log(err);
+                  } else {
+                     Topic.findById(req.body.topicId)
+                     .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
+                     .exec(function (err, topic) {
+                        if (err) {
+                           console.log(err);
+                        } else {
+                           res.json(topic);
+                        }
+                     });
+                  }
+               });
+            } else {
+               // User already liked content, decrease like by 1 to cancel
+               info.Query.findByIdAndUpdate(info.id,
+               { 
+                  $inc: {
+                     likes: -1
+                  },
+                  $pull: {
+                     _likesUsers: req.body.currUser._id
+                  }
+               }, {new: true}, function (err, topic) {
+                  if (err) {
+                     console.log(err);
+                  } else {
+                     Topic.findById(req.body.topicId)
+                     .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
+                     .exec(function (err, topic) {
+                        if (err) {
+                           console.log(err);
+                        } else {
+                           res.json(topic);
+                        }
+                     });
+                  }
+               });
+            }
          }
-      })
+      });
    },
-   likePost: function(req, res) {
-      console.log(req.body);
-      Post.findByIdAndUpdate(req.body.post._id, { $inc: { likes: 1}}, {new: true}, function (err, post) {
+   dislikeContent: function(req, res) {
+      var info = getTypeAndID(req.body);
+      info.Query.findById(info.id)
+      .exec(function (err, data) {
          if (err) {
             console.log(err);
          } else {
-            Topic.findById(req.body.topicId)
-            .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
-            .exec(function (err, topic) {
-               if (err) {
-                  console.log(err);
-               } else {
-                  res.json(topic);
-               }
-            });
+            // If user hasn't disliked content already, dislike content
+            if (data._dislikesUsers.indexOf(req.body.currUser._id) === -1) {
+               info.Query.findByIdAndUpdate(info.id,
+               {
+                  $inc: {
+                     dislikes: 1
+                  },
+                  $push: {
+                     _dislikesUsers: req.body.currUser._id
+                  }
+               }, {new: true}, function (err, topic) {
+                  if (err) {
+                     console.log(err);
+                  } else {
+                     Topic.findById(req.body.topicId)
+                     .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
+                     .exec(function (err, topic) {
+                        if (err) {
+                           console.log(err);
+                        } else {
+                           res.json(topic);
+                        }
+                     });
+                  }
+               });
+            } else {
+               // User already disliked content, decrease dislike by 1 to cancel
+               info.Query.findByIdAndUpdate(info.id,
+               { 
+                  $inc: {
+                     dislikes: -1
+                  },
+                  $pull: {
+                     _dislikesUsers: req.body.currUser._id
+                  }
+               }, {new: true}, function (err, topic) {
+                  if (err) {
+                     console.log(err);
+                  } else {
+                     Topic.findById(req.body.topicId)
+                     .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
+                     .exec(function (err, topic) {
+                        if (err) {
+                           console.log(err);
+                        } else {
+                           res.json(topic);
+                        }
+                     });
+                  }
+               });
+            }
          }
-      })
-   },
-   dislikePost: function(req, res) {
-      console.log(req.body);
-      Post.findByIdAndUpdate(req.body.post._id, { $inc: { dislikes: 1}}, {new: true}, function (err, post) {
-         if (err) {
-            console.log(err);
-         } else {
-            Topic.findById(req.body.topicId)
-            .deepPopulate(['_user', '_postsList._user', '_postsList._comments._user'])
-            .exec(function (err, topic) {
-               if (err) {
-                  console.log(err);
-               } else {
-                  res.json(topic);
-               }
-            });
-         }
-      })
+      });
    },
    getTopicCategories: function(req, res) {
       var topics = [

@@ -1,17 +1,18 @@
-discBoard.controller('topicController', function($stateParams, $scope, LoginFactory, TopicFactory) {
+discBoard.controller('topicController', function($state, $stateParams, $scope, LoginFactory, TopicFactory) {
    var mv = this;
 
    mv.curr_user = LoginFactory.getUser();
 
-   TopicFactory.getTopicDetails($stateParams.id, function(data) {
-      console.log(data);
-      mv.topicDetails = data;
-   });
-
+   // Get topic details on load
    mv.index = function() {
-      TopicFactory.getTopics(function(data) {
-         mv.topics = data;
-         console.log(mv.topics);
+      console.log('indx');
+      TopicFactory.getTopicDetails($stateParams.id, function(data) {
+         mv.topicDetails = data;
+
+         // If topic is invalid, redirect back to dashboard main
+         if (data.status === 400) {
+            $state.go('dashboard.main', null, { reload: true });
+         }
       });
    }
 
@@ -39,15 +40,30 @@ discBoard.controller('topicController', function($stateParams, $scope, LoginFact
       TopicFactory.addComment(post._id, info, function(data) {
          console.log(data);
          mv.topicDetails = data;
-         alert('added comment');
       })
    }
 
-   mv.likeTopic = function() {
+   mv.likeContent = function(content, type) {
       var info = {
-         topicId: $stateParams.id
+         topicId: $stateParams.id,
+         currUser: mv.curr_user,
+         content: content,
+         type: type
       }
-      TopicFactory.likeTopic(info, function(data) {
+      TopicFactory.likeContent(info, function(data) {
+         console.log(data);
+         mv.topicDetails = data;
+      });
+   }
+
+   mv.dislikeContent = function(content, type) {
+      var info = {
+         topicId: $stateParams.id,
+         currUser: mv.curr_user,
+         content: content,
+         type: type
+      }
+      TopicFactory.dislikeContent(info, function(data) {
          console.log(data);
          mv.topicDetails = data;
       });
@@ -72,6 +88,29 @@ discBoard.controller('topicController', function($stateParams, $scope, LoginFact
       }
       console.log(info);
       TopicFactory.dislikePost(info, function(data) {
+         console.log(data);
+         mv.topicDetails = data;
+      })
+   }
+
+   mv.likeComment = function(comment) {
+      var info = {
+         comment: comment,
+         topicId: $stateParams.id
+      }
+      console.log(info);
+      TopicFactory.likeComment(info, function(data) {
+         console.log(data);
+         mv.topicDetails = data;
+      })
+   }
+
+   mv.dislikeComment = function(comment) {
+      var info = {
+         comment: comment,
+         topicId: $stateParams.id
+      }
+      TopicFactory.dislikeComment(info, function(data) {
          console.log(data);
          mv.topicDetails = data;
       })

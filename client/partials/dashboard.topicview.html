@@ -4,10 +4,10 @@
          <div class="topic-title">{{ tc.topicDetails.name }}</div>
          By <a class="user-link" href="#">{{ tc.topicDetails._user.name }}</a> - <i class="fa fa-clock-o"></i> {{ tc.topicDetails.postDateTime | date:'medium' }}
          <div class="pull-right">
-            <a href="" class="btn btn-primary" ng-click="tc.likeTopic();">
+            <a href="" class="btn btn-primary" ng-click="tc.likeContent();">
                <i class="fa fa-thumbs-o-up"></i> Like {{ tc.topicDetails.likes }}
             </a>
-            <a href="" class="btn btn-warning" ng-click="tc.dislikeTopic();">
+            <a href="" class="btn btn-warning" ng-click="tc.dislikeContent();">
                <i class="fa fa-thumbs-o-down"></i> Dislike {{ tc.topicDetails.dislikes }}
             </a>
          </div>
@@ -23,10 +23,10 @@
       <div class="post-header">
          By <a class="user-link" href="#">{{ post._user.name }}</a> - <i class="fa fa-clock-o"></i> {{post.postDateTime | date:'medium'}}
          <div class="pull-right">
-            <a href="" class="btn btn-primary" ng-click="tc.likePost(post);">
+            <a href="" class="btn btn-primary" ng-click="tc.likeContent(post, 'post');">
                <i class="fa fa-thumbs-o-up"></i> Like {{ post.likes }}
             </a>
-            <a href="" class="btn btn-warning" ng-click="tc.dislikePost(post);">
+            <a href="" class="btn btn-warning" ng-click="tc.dislikeContent(post, 'post');">
                <i class="fa fa-thumbs-o-down"></i> Dislike {{ post.dislikes }}
             </a>
          </div>
@@ -39,9 +39,12 @@
       <div class="post-header">
          By <a class="user-link" ng-href="/#/user/{{comment._user._id}}">{{ comment._user.name }}</a> - <i class="fa fa-clock-o"></i> {{ comment.postDateTime | date:'medium'}}
          <div class="pull-right">
-            <a href="" class="btn btn-primary" ng-click="tc.likePost(post);"><i class="fa fa-thumbs-o-up">
-            </i> Like {{ post.likes }}</a>
-            <a href="" class="btn btn-warning" ng-click="tc.dislikePost(post);">Dislike {{ post.dislikes }}</a>
+            <a href="" class="btn btn-primary" ng-click="tc.likeContent(comment, 'comment');">
+               <i class="fa fa-thumbs-o-up"></i> Like {{ comment.likes }}
+            </a>
+            <a href="" class="btn btn-warning" ng-click="tc.dislikeContent(comment, 'comment');">
+               <i class="fa fa-thumbs-o-down"></i> Dislike {{ comment.dislikes }}
+            </a>
          </div>
       </div>
       <div class="panel-body">
